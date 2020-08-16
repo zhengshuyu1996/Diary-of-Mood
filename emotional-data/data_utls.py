@@ -29,7 +29,8 @@ for line in lines:
     if len(conv) == 1:
         continue
 
-    conv = [" ".join(jieba.cut(i["value"])) for i in conv]
+    conv = [" ".join(jieba.cut(i["value"].replace('\\n', '').replace('\\r', '').replace('\\t', '')\
+                                         .replace(chr(9), '').replace(chr(10), '').replace(chr(13), ''))) for i in conv]
 
     last_ask = ""
     for i in conv:
