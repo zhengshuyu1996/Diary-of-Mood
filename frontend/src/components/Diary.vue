@@ -47,6 +47,7 @@
 
 <script>
 // import $ from 'jquery'
+import { Message } from 'element-ui'
 export default {
   name: 'Diary',
   data () {
@@ -94,23 +95,41 @@ export default {
     },
     smallScreen () {
       return document.body.clientWidth < 768
+    },
+    id () {
+      if (this.$store.state.user_info && this.$store.state.user_info.hasOwnProperty('id')) {
+        return this.$store.state.user_info.id
+      }
+      return ''
+    }
+  },
+  watch: {
+    id () {
+      this.getDiary()
+      this.getComments()
     }
   },
   methods: {
     getDiary () {
-      if (this.day === '0') {
+      if (this.day === '0' || this.id === '') {
         this.diary = this.defaultDiary
-        // return
+        return
       }
-      // let that = this
-      // this.$axios.get(this.$global.baseUrl + 'uploadHTML')
-      //   .then(res => {
-      //     console.log('StyleList', res.data)
-      //     that.diary = res.data
-      //   })
-      //   .catch(err => {
-      //     console.log(err)
-      //   })
+      let that = this
+      this.showLoading = true
+      this.$axios.get('/diary?date=' + this.day + '&id=' + this.id)
+        .then(res => {
+          console.log('getDiary', res.data)
+          if (res.data.status === 'OK') {
+            that.diary = res.data.data
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+        .finally(() => {
+          that.showLoading = false
+        })
     },
     getComments () {
       if (this.day === '0') {
@@ -136,13 +155,28 @@ export default {
       this.$router.push('/edit/' + this.day)
     },
     deleteDiary () {
-      // let that = this
+      let that = this
       this.$confirm('确认要删除 ' + this.day + ' 的日记吗?', '删除日记', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
       })
         .then(() => {
-        // that.doAudit(item, 1, '恢复')
+          that.showLoading = true
+          that.$axios.get('/delete?date=' + this.day + '&id=' + this.id)
+            .then(res => {
+              if (res.data.status === 'OK') {
+                Message.success('删除成功')
+                that.$router.replace('/')
+              } else {
+                Message.error('删除失败')
+              }
+            })
+            .catch(err => {
+              Message.error('删除失败' + err)
+            })
+            .finally(() => {
+              that.showLoading = false
+            })
         })
         .catch(err => {
           console.log(err)

@@ -37,19 +37,26 @@ export default {
       showMatch: false,
       today: new Date(),
       dayMood: {
-        '2020-08-09': {
-          point: 0.9,
-          words: 100,
-          responseNum: 0,
-          hasNew: false
-        },
-        '2020-08-08': {
-          point: 0.1,
-          words: 200,
-          responseNum: 1,
-          hasNew: true
-        }
+        // '2020-08-08': {
+        //   point: 0.1,
+        //   words: 200,
+        //   responseNum: 1,
+        //   hasNew: true
+        // }
       }
+    }
+  },
+  computed: {
+    id () {
+      if (this.$store.state.user_info && this.$store.state.user_info.hasOwnProperty('id')) {
+        return this.$store.state.user_info.id
+      }
+      return ''
+    }
+  },
+  watch: {
+    id () {
+      this.fetchCalendar()
     }
   },
   methods: {
@@ -58,10 +65,12 @@ export default {
     },
     calcColor (day) {
       if (this.dayMood.hasOwnProperty(day)) {
-        let r = 255 * (1 - this.dayMood[day].point)
-        let g = 255 * this.dayMood[day].point
-        let b = 100 * this.dayMood[day].point / 2
-        return this.rgbaToString(r, g, b)
+        let score = this.dayMood[day].point
+        if (score < 0) {
+          score = -score
+          return this.rgbaToString(88, 201, 185, score)
+        }
+        return this.rgbaToString(239, 108, 0, score)
       }
       return '#ffffff'
     },
@@ -89,28 +98,40 @@ export default {
     openDiary (day) {
       this.$router.push('/diary/' + day)
     },
-    fetchCalender () {
-      // this.showLoading = true
-      // let that = this
-      // this.$axios.post(this.$global.baseUrl + 'uploadHTML', {
-      //   body: this.code,
-      //   limit: this.limit
-      // })
-      //   .then(res => {
-      //     console.log('StyleList', res.data)
-      //     that.timestamp = res.data.timestamp
-      //     that.original_html = that.$global.baseUrl + res.data.filepath
-      //     that.styles = res.data.styles
-      //     that.showResult = true
-      //     that.showLoading = false
-      //   })
-      //   .catch(err => {
-      //     console.log(err)
-      //   })
-    },
-    mounted () {
-      this.fetchCalender()
+    fetchCalendar () {
+      let that = this
+      if (this.id === '') {
+        return
+      }
+      this.showLoading = true
+      this.$axios.get('/calendar?id=' + this.id)
+        .then(res => {
+          console.log('Calendar:', res.data)
+          if (res.data.status === 'OK') {
+            let data = res.data.data
+            let calendar = {}
+            for (let i = 0; i < data.length; i += 1) {
+              calendar[data[i].date] = {
+                point: data[i].point,
+                words: data[i].words,
+                responseNum: data[i].responseNum,
+                hasNew: data[i].hasNew
+              }
+            }
+            that.dayMood = calendar
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+        .finally(() => {
+          that.showLoading = false
+        })
     }
+  },
+  mounted () {
+    console.log(this.$store.state)
+    this.fetchCalendar()
   }
 }
 </script>

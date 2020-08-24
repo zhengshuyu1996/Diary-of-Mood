@@ -10,7 +10,7 @@
           <a href="/#/"><i class="fa fa-home nav-icon"></i></a>
         </div>
         <div class="content-item">
-          <a href="/#/user"><i class="fa fa-user-circle nav-icon"></i></a>
+          <a :href="userURL"><i class="fa fa-user-circle nav-icon"></i></a>
         </div>
       </div>
     </nav>
@@ -22,11 +22,42 @@ export default {
   name: 'yheader',
   data () {
     return {
-      login_status: 0,
-      username: ''
+      login_status: false
     }
   },
   methods: {
+    showLogin () {
+      this.$confirm('您还未登录，请点击下面的按钮登录', '未登录', {
+        confirmButtonText: '登录'
+      })
+        .then(() => {
+          location.replace('/login')
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    checkLogin () {
+      let that = this
+      this.$axios.get('/checkLogin')
+        .then(res => {
+          console.log('checkLogin', res.data)
+          if (res.data.status === 'OK') {
+            that.login_status = res.data.isLogin
+            if (that.login_status) {
+              that.$store.commit('SET_USERINFO', res.data.userInfo)
+            } else {
+              that.showLogin()
+            }
+          } else {
+            that.login_status = false
+            that.showLogin()
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
   },
   computed: {
     isNotIndex () {
@@ -34,10 +65,16 @@ export default {
     },
     isEdit () {
       return this.$route.path.startsWith('/edit')
+    },
+    userURL () {
+      if (this.login_status) {
+        return '/#/user'
+      }
+      return '/login'
     }
   },
   created () {
-    // this.refreshHeader()
+    this.checkLogin()
   }
 }
 </script>

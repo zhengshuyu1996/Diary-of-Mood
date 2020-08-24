@@ -10,11 +10,7 @@ let store = new Vuex.Store({
   //   paths: ['username', 'uuid']
   // })],
   state: {
-    user_info: {
-      user_name: '',
-      user_id: '',
-      user_email: ''
-    }
+    user_info: {}
   },
   mutations: {
     SET_USERINFO: (state, userinfo) => {

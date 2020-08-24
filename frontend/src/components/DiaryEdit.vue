@@ -2,7 +2,7 @@
   <div class="container-fluid" id="diary-edit">
     <div class="edit-container">
       <div class="title-container">
-        <h3>新日记</h3>
+        <h3>{{title}}</h3>
         <div class="diary-date">
           <el-date-picker
             style="width: 150px;"
@@ -39,13 +39,16 @@
 import { codemirror } from 'vue-codemirror'
 import 'codemirror/mode/htmlmixed/htmlmixed.js'
 import 'codemirror/theme/3024-day.css'
+import { dateFormat } from '../assets/util'
+import { Message } from 'element-ui'
 export default {
   name: 'DiaryEdit',
   data () {
     return {
-      diary: '',
       showLoading: false,
+      diary: '',
       diaryDate: Date.now(),
+      title: '新日记',
       cmOptions: {
         // codemirror options
         tabSize: 2,
@@ -73,20 +76,34 @@ export default {
   computed: {
     isEdit () {
       return this.day !== '0'
+    },
+    id () {
+      if (this.$store.state.user_info && this.$store.state.user_info.hasOwnProperty('id')) {
+        return this.$store.state.user_info.id
+      }
+      return ''
+    }
+  },
+  watch: {
+    id () {
+      this.getDiaryContent(this.day)
     }
   },
   methods: {
     getDiaryContent (day) {
-      if (day === '0') {
+      if (day === '0' || this.id === '') {
         this.diary = ''
         return
       }
       this.diaryDate = Date.parse(day)
       this.showLoading = true
       let that = this
-      this.$axios.get(this.$global.baseUrl + 'uploadHTML')
+      this.$axios.get('/diary?date=' + day + '&id=' + this.id)
         .then(res => {
-          that.diary = res.data
+          if (res.data.status === 'OK') {
+            that.title = res.data.data['title']
+            that.diary = res.data.data['content']
+          }
         })
         .catch(err => {
           console.log(err)
@@ -99,28 +116,44 @@ export default {
       this.diary = ''
     },
     saveDiary () {
-      console.log(this.diary)
-      this.$router.go(-1)
-      // this.showLoading = true
-      // let that = this
-      // this.$axios.post(this.$global.baseUrl + 'uploadHTML', {
-      //   body: this.code,
-      //   limit: this.limit
-      // })
-      //   .then(res => {
-      //     console.log('StyleList', res.data)
-      //     that.timestamp = res.data.timestamp
-      //     that.original_html = that.$global.baseUrl + res.data.filepath
-      //     that.styles = res.data.styles
-      //     that.showResult = true
-      //     that.showLoading = false
-      //   })
-      //   .catch(err => {
-      //     console.log(err)
-      //   })
+      console.log(this.diary, this.diaryDate)
+      this.showLoading = true
+      let that = this
+      let url = ''
+      if (!this.isEdit) {
+        url = '/add'
+      } else {
+        url = '/edit'
+      }
+      this.$axios.post(url, {
+        date: dateFormat(new Date(that.diaryDate), 'yyyy-MM-dd'),
+        content: that.diary,
+        title: that.title,
+        id: that.id
+      })
+        .then(res => {
+          console.log('saveDiary', res.data)
+          if (res.data.status === 'OK') {
+            Message.success('保存成功')
+            if (!that.isEdit) {
+              that.$router.replace('/')
+            } else {
+              that.$router.go(-1)
+            }
+          } else {
+            Message.error('保存失败')
+          }
+          that.showLoading = false
+        })
+        .catch(err => {
+          console.log(err)
+          Message.error('服务器出错，保存失败')
+          that.showLoading = false
+        })
     }
   },
   created () {
+    this.diaryDate = Date.now()
     this.getDiaryContent(this.day)
   }
 }
