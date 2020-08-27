@@ -1,0 +1,61 @@
+INFO:tensorflow:tokens: [CLS] 又 失 眠 了 感 觉 工 作 压 力 太 大 太 焦 虑 了 [SEP]
+INFO:tensorflow:input_ids: 101 1348 1927 4697 749 2697 6230 2339 868 1327 1213 1922 1920 1922 4193 5991 749 102 0 0 0 0 0 0 0 0 0 0 0 0
+INFO:tensorflow:input_mask: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0
+INFO:tensorflow:input_type_ids: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+看来你对目前的工作很重视，希望自己能够做得很好。
+
+INFO:tensorflow:*** Example ***
+INFO:tensorflow:unique_id: 0
+INFO:tensorflow:tokens: [CLS] 今 天 一 个 人 去 吃 饭 感 觉 非 常 孤 独 有 很 多 话 不 知 道 该 和 谁 说 [SEP]
+INFO:tensorflow:input_ids: 101 791 1921 671 702 782 1343 1391 7649 2697 6230 7478 2382 2109 4324 3300 2523 1914 6413 679 4761 6887 6421 1469 6443 6432 102 0 0 0
+INFO:tensorflow:input_mask: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0
+INFO:tensorflow:input_type_ids: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+约一个老师做咨询吧，心病也需要治疗的
+
+INFO:tensorflow:*** Example ***
+INFO:tensorflow:unique_id: 0
+INFO:tensorflow:tokens: [CLS] 马 上 要 考 试 了 担 心 考 砸 真 的 好 紧 张 [SEP]
+INFO:tensorflow:input_ids: 101 7716 677 6206 5440 6407 749 2857 2552 5440 4790 4696 4638 1962 5165 2476 102 0 0 0 0 0 0 0 0 0 0 0 0 0
+INFO:tensorflow:input_mask: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0
+INFO:tensorflow:input_type_ids: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+你有考前焦虑的表现，可以在考试前接受一次心理辅导，就能有效的保证你正常的应试，考出应有的水平。
+
+INFO:tensorflow:*** Example ***
+INFO:tensorflow:unique_id: 0
+INFO:tensorflow:tokens: [CLS] 分 手 太 痛 苦 了 ！ 需 要 多 久 才 能 好 啊 忍 不 住 去 想 他 [SEP]
+INFO:tensorflow:input_ids: 101 1146 2797 1922 4578 5736 749 8013 7444 6206 1914 719 2798 5543 1962 1557 2556 679 857 1343 2682 800 102 0 0 0 0 0 0 0
+INFO:tensorflow:input_mask: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0
+INFO:tensorflow:input_type_ids: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+你越是依恋他，可能越是他离开你的原因。
+
+INFO:tensorflow:*** Example ***
+INFO:tensorflow:unique_id: 0
+INFO:tensorflow:tokens: [CLS] 感 觉 和 同 事 很 难 相 处 ， 今 天 又 和 他 们 吵 架 了 [SEP]
+INFO:tensorflow:input_ids: 101 2697 6230 1469 1398 752 2523 7410 4685 1905 8024 791 1921 1348 1469 800 812 1427 3373 749 102 0 0 0 0 0 0 0 0 0
+INFO:tensorflow:input_mask: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0
+INFO:tensorflow:input_type_ids: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+有什么矛盾要学会化解，不要害怕，要积极的解决问题，这是一种本领。
+
+INFO:tensorflow:*** Example ***
+INFO:tensorflow:unique_id: 0
+INFO:tensorflow:tokens: [CLS] 又 失 业 了 生 存 压 力 好 大 感 觉 未 来 没 有 希 望 [SEP]
+INFO:tensorflow:input_ids: 101 1348 1927 689 749 4495 2100 1327 1213 1962 1920 2697 6230 3313 3341 3766 3300 2361 3307 102 0 0 0 0 0 0 0 0 0 0
+INFO:tensorflow:input_mask: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0
+INFO:tensorflow:input_type_ids: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+学业繁重，产生焦虑，可以需要调整
+
+INFO:tensorflow:*** Example ***
+INFO:tensorflow:unique_id: 0
+INFO:tensorflow:tokens: [CLS] 我 感 觉 自 己 抑 郁 了 ， 最 近 很 烦 ， 看 什 么 都 生 气 [SEP]
+INFO:tensorflow:input_ids: 101 2769 2697 6230 5632 2346 2829 6944 749 8024 3297 6818 2523 4172 8024 4692 784 720 6963 4495 3698 102 0 0 0 0 0 0 0 0
+INFO:tensorflow:input_mask: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0
+INFO:tensorflow:input_type_ids: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+任何人都会遇到问题，有些人遇到问题解决了，而有些人没有。好的心态注定1个人的成功与否。无论遇到什么，我们应有1个好的心态，积极奋进坚强不屈。
+
+INFO:tensorflow:*** Example ***
+INFO:tensorflow:unique_id: 0
+INFO:tensorflow:tokens: [CLS] 要 毕 业 了 但 还 没 有 找 到 工 作 很 迷 茫 不 知 道 未 来 怎 么 办 [SEP]
+INFO:tensorflow:input_ids: 101 6206 3684 689 749 852 6820 3766 3300 2823 1168 2339 868 2523 6837 5755 679 4761 6887 3313 3341 2582 720 1215 102 0 0 0 0 0
+INFO:tensorflow:input_mask: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0
+INFO:tensorflow:input_type_ids: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+谁都有迷茫的时候，还是为自己定一个人生目标吧!这样在迷茫的时候或许能帮到你，你还年轻，你说呢?
