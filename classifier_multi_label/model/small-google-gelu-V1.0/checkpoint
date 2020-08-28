@@ -1,1 +1,1 @@
-model_checkpoint_path: "/Users/jiayimao/Desktop/classifier_multi_label/model/model_10_30144.ckpt"
+model_checkpoint_path: "/home/szheng/Diary-of-Mood/classifier_multi_label/model/small-google-gelu-V1.0/model_47_15072.ckpt"
