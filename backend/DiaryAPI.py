@@ -1,22 +1,13 @@
 from flask import request, make_response, jsonify, Blueprint
 import json
-from google.cloud import translate_v2 as translate
 from google.cloud import language
 from google.cloud.language import enums
 from google.cloud.language import types
 from google.cloud import datastore
 from Utils import handleException
+from multi_label_semantic import get_label
 
 diary_api = Blueprint('diary_api', __name__)
-
-
-def translateText(text, target):
-    translate_client = translate.Client()
-    # Translates some text into English
-    translation = translate_client.translate(
-        text,
-        target_language=target)
-    return translation['translatedText']
 
 
 def deleteDiary(date, uid):
@@ -50,12 +41,23 @@ def addDiary(date, title, content, uid):
         ).document_sentiment
     score = sentiment.score
 
+    # Detect multilabel class
+    emotion_class, emotion_score = get_label(content)
+    emotion_score = float(emotion_score)
+    if 'depressed' in emotion_class:
+        emotion_class = 'depressed'
+    else:
+        emotion_class = emotion_class[0]
+    print('multi_label_analysis', emotion_class, emotion_score)
+
     # Store Calendar entity
     datastore_client = datastore.Client()
     calendar_entity = datastore.Entity(datastore_client.key('Calendar'))
     calendar_entity.update({
         'date': date,
         'point': score,
+        'emotion_class': emotion_class,
+        'emotion_score': emotion_score,
         'words': len(content),
         'responseNum': 0,
         'hasNew': False,
@@ -69,6 +71,9 @@ def addDiary(date, title, content, uid):
         'title': title,
         'date': date,
         'content': content,
+        'point': score,
+        'emotion_class': emotion_class,
+        'emotion_score': emotion_score,
         'uid': uid
     })
     datastore_client.put(diary_entity)
