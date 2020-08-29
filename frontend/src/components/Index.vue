@@ -36,13 +36,28 @@ export default {
       showResult: false,
       showMatch: false,
       today: new Date(),
-      dayMood: {
-        // '2020-08-08': {
-        //   point: 0.1,
-        //   words: 200,
-        //   responseNum: 1,
-        //   hasNew: true
-        // }
+      dayMood: {},
+      colors: {
+        'happy': {
+          r: 239,
+          g: 108,
+          b: 0
+        },
+        'angry': {
+          r: 183,
+          g: 28,
+          b: 28
+        },
+        'disguested': {
+          r: 88,
+          g: 201,
+          b: 185
+        },
+        'depressed': {
+          r: 96,
+          g: 125,
+          b: 139
+        }
       }
     }
   },
@@ -65,6 +80,10 @@ export default {
     },
     calcColor (day) {
       if (this.dayMood.hasOwnProperty(day)) {
+        if (this.dayMood[day].hasOwnProperty('emotion_class')) {
+          let rgb = this.colors[this.dayMood[day].emotion_class]
+          return this.rgbaToString(rgb.r, rgb.g, rgb.b, this.dayMood[day].emotion_score)
+        }
         let score = this.dayMood[day].point
         if (score < 0) {
           score = -score

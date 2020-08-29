@@ -12,18 +12,21 @@
     </div>
     <div class="comment-container">
       <p class="comment-title">评论区</p>
-      <div
-        class="comment-inner"
-        v-for="(comment, idx) in comments"
-        :key="idx">
-<!--        <span :class="{'user-left': !comment.isOwner, 'user-right': comment.isOwner}">{{comment.userName}}</span>-->
+      <div v-if="!loadingComments && comments.length > 0">
         <div
-          class="comment-item"
-          :class="{'comment-left': !comment.isOwner, 'comment-right': comment.isOwner}">
-          <span :class="{ 'bubble-corner-left': !comment.isOwner, 'bubble-corner-right': comment.isOwner }"></span>
-          <p>{{comment.comment}}</p>
+          class="comment-inner"
+          v-for="(comment, idx) in comments"
+          :key="idx">
+          <div
+            class="comment-item"
+            :class="{'comment-left': !comment.isOwner, 'comment-right': comment.isOwner}">
+            <span :class="{ 'bubble-corner-left': !comment.isOwner, 'bubble-corner-right': comment.isOwner }"></span>
+            <p>{{comment.comment}}</p>
+          </div>
         </div>
       </div>
+      <div v-else-if="loadingComments" class="comment-inner user-left"><p>评论加载中...</p></div>
+      <div v-else class="comment-inner user-left"><p>暂无评论</p></div>
     </div>
     <div class="response-box">
       <el-input
@@ -33,7 +36,7 @@
         placeholder="评论"
         class="response-input">
       </el-input>
-      <button type="button" class="btn response-btn">发送</button>
+      <button type="button" class="btn response-btn" @click="postComment">发送</button>
     </div>
     <div id="page-loader" v-show="showLoading">
       <div class="spinner">
@@ -65,22 +68,20 @@ export default {
       myResponse: '',
       comments: [
         {
-          userName: 'Adviser',
           comment: '心情不好吗？',
           isOwner: false
         },
         {
-          userName: 'owner',
           comment: '气死了气死了气死了气死了气死了气死了气死了气死了气死了气死了气死了气死了气死了气死了气死了气死了气死了气死了气死了气死了气死了气死了气死了气死了',
           isOwner: true
         },
         {
-          userName: 'Adviser',
           comment: '我理解你的感受，考试前焦虑是正常的。',
           isOwner: false
         }
       ],
-      showLoading: false
+      showLoading: false,
+      loadingComments: false
     }
   },
   props: {
@@ -134,22 +135,23 @@ export default {
     getComments () {
       if (this.day === '0') {
         this.diary = this.defaultDiary
-        // return
+        return
       }
-      // let that = this
-      // this.$axios.post(this.$global.baseUrl + 'uploadHTML', {
-      //   body: this.code,
-      //   limit: this.limit
-      // })
-      //   .then(res => {
-      //     console.log('StyleList', res.data)
-      //     that.timestamp = res.data.timestamp
-      //     that.original_html = that.$global.baseUrl + res.data.filepath
-      //     that.styles = res.data.styles
-      //   })
-      //   .catch(err => {
-      //     console.log(err)
-      //   })
+      this.loadingComments = true
+      let that = this
+      this.$axios.get('/comments?date=' + this.day + '&id=' + this.id)
+        .then(res => {
+          console.log('comments', res.data)
+          if (res.data.status === 'OK') {
+            that.comments = res.data.data
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+        .finally(() => {
+          that.loadingComments = false
+        })
     },
     editDiary () {
       this.$router.push('/edit/' + this.day)
@@ -181,9 +183,41 @@ export default {
         .catch(err => {
           console.log(err)
         })
+    },
+    postComment () {
+      if (this.myResponse.length === 0) {
+        return
+      }
+      this.showLoading = true
+      let that = this
+      this.$axios.post('/post-comment', {
+        date: this.day,
+        id: this.id,
+        comment: this.myResponse
+      })
+        .then(res => {
+          console.log('comments', res.data)
+          if (res.data.status === 'OK') {
+            Message.success('回复成功')
+            that.comments.push({
+              comment: that.myResponse,
+              isOwner: true
+            })
+            setTimeout(that.getComments, 1000)
+          } else {
+            Message.error('回复失败')
+          }
+        })
+        .catch(err => {
+          console.log(err)
+          Message.error('回复失败，' + err)
+        })
+        .finally(() => {
+          that.showLoading = false
+        })
     }
   },
-  created () {
+  mounted () {
     this.getDiary()
     this.getComments()
   }
