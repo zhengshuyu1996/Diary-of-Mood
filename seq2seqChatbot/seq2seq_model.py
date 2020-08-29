@@ -25,7 +25,7 @@ import numpy as np
 from six.moves import xrange  # pylint: disable=redefined-builtin
 import tensorflow as tf
 
-import prepareData
+from seq2seqChatbot import prepareData
 
 import copy
 

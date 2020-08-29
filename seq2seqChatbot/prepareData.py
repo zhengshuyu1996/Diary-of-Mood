@@ -2,7 +2,7 @@
 import math
 import os
 import random
-import getConfig
+from seq2seqChatbot import getConfig
 from tensorflow.python.platform import gfile
 import re
 # 特殊标记，用来填充标记对话
@@ -62,6 +62,8 @@ def prepare_custom_data(working_directory, train_enc, train_dec, test_enc, test_
     # Create vocabularies of the appropriate sizes.
     enc_vocab_path = os.path.join(working_directory, "vocab%d.enc" % enc_vocabulary_size)
     dec_vocab_path = os.path.join(working_directory, "vocab%d.dec" % dec_vocabulary_size)
+    # enc_vocab_path = os.path.join(working_directory, "train.enc")
+    # dec_vocab_path = os.path.join(working_directory, "train.dec")
     
     create_vocabulary(train_enc,enc_vocabulary_size,enc_vocab_path)
     create_vocabulary(train_dec,dec_vocabulary_size,dec_vocab_path)

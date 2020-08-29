@@ -5,7 +5,7 @@ from google.cloud.language import enums
 from google.cloud.language import types
 from google.cloud import datastore
 from Utils import handleException
-from multi_label_semantic import get_label
+# from multi_label_semantic import get_label
 
 diary_api = Blueprint('diary_api', __name__)
 
@@ -42,13 +42,13 @@ def addDiary(date, title, content, uid):
     score = sentiment.score
 
     # Detect multilabel class
-    emotion_class, emotion_score = get_label(content)
-    emotion_score = float(emotion_score)
-    if 'depressed' in emotion_class:
-        emotion_class = 'depressed'
-    else:
-        emotion_class = emotion_class[0]
-    print('multi_label_analysis', emotion_class, emotion_score)
+    # emotion_class, emotion_score = get_label(content)
+    # emotion_score = float(emotion_score)
+    # if 'depressed' in emotion_class:
+    #     emotion_class = 'depressed'
+    # else:
+    #     emotion_class = emotion_class[0]
+    # print('multi_label_analysis', emotion_class, emotion_score)
 
     # Store Calendar entity
     datastore_client = datastore.Client()
@@ -56,8 +56,8 @@ def addDiary(date, title, content, uid):
     calendar_entity.update({
         'date': date,
         'point': score,
-        'emotion_class': emotion_class,
-        'emotion_score': emotion_score,
+        # 'emotion_class': emotion_class,
+        # 'emotion_score': emotion_score,
         'words': len(content),
         'responseNum': 0,
         'hasNew': False,
@@ -72,8 +72,8 @@ def addDiary(date, title, content, uid):
         'date': date,
         'content': content,
         'point': score,
-        'emotion_class': emotion_class,
-        'emotion_score': emotion_score,
+        # 'emotion_class': emotion_class,
+        # 'emotion_score': emotion_score,
         'uid': uid
     })
     datastore_client.put(diary_entity)

@@ -25,16 +25,15 @@ import os
 import random
 import sys
 import time
-import prepareData
 
 import numpy as np
-from six.moves import xrange  
+from six.moves import xrange
 import tensorflow as tf
 
 from configparser import SafeConfigParser
-import prepareData
-import seq2seq_model
-    
+from seq2seqChatbot import prepareData
+from seq2seqChatbot import seq2seq_model
+
 gConfig = {}
 
 def get_config(config_file='seq2seq.ini'):
@@ -212,7 +211,7 @@ def self_test():
 def init_session(sess, conf='seq2seq.ini'):
     global gConfig
     gConfig = get_config(conf)
- 
+
     # Create model and load parameters.
     model = create_model(sess, True)
     model.batch_size = 1  # We decode one sentence at a time.
@@ -220,6 +219,8 @@ def init_session(sess, conf='seq2seq.ini'):
     # Load vocabularies.
     enc_vocab_path = os.path.join(gConfig['working_directory'],"vocab%d.enc" % gConfig['enc_vocab_size'])
     dec_vocab_path = os.path.join(gConfig['working_directory'],"vocab%d.dec" % gConfig['dec_vocab_size'])
+    # enc_vocab_path = os.path.join('../seq2seqChatbot/', gConfig['working_directory'], "train.enc")
+    # dec_vocab_path = os.path.join('../seq2seqChatbot/', gConfig['working_directory'], "train.dec")
 
     enc_vocab, _ = prepareData.initialize_vocabulary(enc_vocab_path)
     _, rev_dec_vocab = prepareData.initialize_vocabulary(dec_vocab_path)
@@ -262,6 +263,5 @@ if __name__ == '__main__':
         # start training
         train()
     elif gConfig['mode'] == 'server':
-    
         print('Serve Usage : >> python3 webui/app.py')
         print('# uses seq2seq_serve.ini as conf file')
