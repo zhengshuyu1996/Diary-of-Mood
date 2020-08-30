@@ -1,9 +1,10 @@
 from flask import request, make_response, jsonify, Blueprint
 from google.cloud import datastore
 from Utils import handleException
-from seq2seq import reply
+# from seq2seq import reply
 import time
 import json
+import requests
 
 
 comment_api = Blueprint('comment_api', __name__)
@@ -21,36 +22,51 @@ def getDiary(date, uid):
 
 
 def getComments(date, uid):
+    # print(date, uid)
     datastore_client = datastore.Client()
     query = datastore_client.query(kind='DiaryComment')
     query.add_filter('date', '=', date)
     query.add_filter('uid', '=', uid)
-    query.order = ['timestamp']
-    return list(query.fetch())
+    ans = list(query.fetch())
+    ans = sorted(ans, key = lambda x: x['timestamp'])
+    return ans
 
 
 def saveComment(date, uid, comment, isowner):
     datastore_client = datastore.Client()
+
+    # save comment
     comment_entity = datastore.Entity(datastore_client.key('DiaryComment'))
     comment_entity.update({
         'date': date,
         'comment': comment,
-        'isowner': isowner,
+        'isOwner': isowner,
         'timestamp': time.time(),
         'uid': uid
     })
     datastore_client.put(comment_entity)
 
+    # update calendar
+    query = datastore_client.query(kind='Calendar')
+    query.add_filter('uid', '=', uid)
+    query.add_filter('date', '=', date)
+    calendar_entity = list(query.fetch())[0]
+    calendar_entity['responseNum'] = calendar_entity['responseNum'] + 1
+    datastore_client.put(calendar_entity)
+
 
 def generateComment(comment, mode='retrieval'):
-    if mode == 'retrieval':
-        ans = reply(comment)
-    else:
-        ans = reply(comment)
-    return ans
+    data = {'comment': comment, 'mode': mode}
+    ans = requests.post('http://luckylucy060.nat300.top/generate', json.dumps(data))
+    ans.encoding = 'utf-8'
+    data = json.loads(ans.text)
+    if data['status'] == 'OK':
+        # print(data['data'])
+        return data['data']
+    return ''
 
 
-@comment_api.route('/comment', methods=['GET'])
+@comment_api.route('/comments', methods=['GET'])
 def getCommentAPI():
     response = {'status': 'Error'}
     try:
@@ -59,12 +75,17 @@ def getCommentAPI():
 
         diary = getDiary(date, uid)
         if diary is not None:
-            if diary['score'] < -0.8 or diary['emotion_class'] == 'depressed':
+            if diary['point'] < -0.5 or diary['emotion_class'] == 'depressed':
                 comments = getComments(date, uid)
+                # print(comments)
                 if len(comments) == 0 or comments[-1]['isOwner']:
-                    newComment = generateComment(diary['content'])
-                    saveComment(date, uid, newComment, isowner = False)
-                    comments = getComments(date, uid)
+                    if len(comments) == 0:
+                        newComment = generateComment(diary['content'])
+                    else:
+                        newComment = generateComment(comments[-1]['comment'])
+                    if len(newComment) > 0:
+                        saveComment(date, uid, newComment, isowner = False)
+                        comments = getComments(date, uid)
                 response['data'] = comments
             else:
                 response['data'] = []

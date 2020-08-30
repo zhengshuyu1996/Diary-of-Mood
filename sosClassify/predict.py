@@ -45,7 +45,7 @@ class CnnModel:
         }
 
         y_pred_cls = self.session.run(self.model.y_pred_cls, feed_dict=feed_dict)
-        return self.categories[y_pred_cls[0]]
+        return self.categories[y_pred_cls[0]], y_pred_cls[0]
 
 
 if __name__ == '__main__':

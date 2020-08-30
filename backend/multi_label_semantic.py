@@ -63,6 +63,6 @@ def get_label(sentence):
 if __name__ == '__main__':
 
     # sent='今天见到了喜欢了很久的作家，嘻嘻！'
-    sent = '分手太痛苦了！需要多久才能好啊 忍不住去想他'
-
-    print(get_label(sent, MODEL))
+    # sent = '分手太痛苦了！需要多久才能好啊 忍不住去想他'
+    sent = '在生气的时候控制不住自己的脾气，会有想自残的倾向，觉得生无可恋，信任不了任何人'
+    print(get_label(sent))
