@@ -5,15 +5,18 @@ Created on Thu May 30 17:12:37 2019
 @author: cm
 """
 
+
 import os
+#os.environ["CUDA_VISIBLE_DEVICES"] = '-1'
+pwd = os.path.dirname(os.path.abspath(__file__))
 import sys
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 import numpy as np
 import tensorflow as tf
-from networks import NetworkAlbert
-from classifier_utils import get_feature_test, id2label
-
-pwd = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+from classifier_multi_label.hyperparameters import Hyperparamters as hp
+from classifier_multi_label.networks import NetworkAlbert
+from classifier_multi_label.classifier_utils import get_feature_test,id2label
+from classifier_multi_label.hyperparameters import Hyperparamters as hp
 
 
 class ModelAlbertTextCNN(object,):
@@ -29,14 +32,14 @@ class ModelAlbertTextCNN(object,):
             sess = tf.Session()
             out_dir = os.path.join(pwd, "model")
             with sess.as_default():
-                albert = NetworkAlbert(is_training = False)
-                saver = tf.train.Saver()
+                albert =  NetworkAlbert(is_training=False)
+                saver = tf.train.Saver()  
                 sess.run(tf.global_variables_initializer())
-                checkpoint_dir = os.path.abspath(os.path.join(out_dir, 'small-google-gelu-V1.0'))
+                checkpoint_dir = os.path.abspath(os.path.join(out_dir,'small-google-gelu-V1.0'))
                 print (checkpoint_dir)
                 ckpt = tf.train.get_checkpoint_state(checkpoint_dir)
                 saver.restore(sess, ckpt.model_checkpoint_path)
-        return albert, sess
+        return albert,sess
 
 
 MODEL = ModelAlbertTextCNN()
@@ -68,3 +71,5 @@ if __name__ == '__main__':
     print(get_label(sent))
     # end = time.time()
     # print(end-start)
+
+
